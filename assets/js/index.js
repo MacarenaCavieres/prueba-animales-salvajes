@@ -4,6 +4,8 @@ const comentarios = document.querySelector("#comentarios");
 const btnRegistrar = document.querySelector("#btnRegistrar");
 const form = document.querySelector("form");
 const preview = document.querySelector("#preview");
+const Animales = document.querySelector("#Animales");
+const player = document.querySelector("#player");
 
 class Animal {
     #nombre;
@@ -68,15 +70,50 @@ class Aguila extends Animal {
 form.addEventListener("submit", (e) => {
     e.preventDefault();
     agrupar();
+    imgs();
 });
 
-const agrupar = () => {
+const imgs = async () => {
+    try {
+        const response = await fetch("animales.json");
+
+        if (!response.ok) {
+            throw new Error("No se encontro lo solicitado");
+        }
+        const { animales } = await response.json();
+
+        return animales;
+    } catch (err) {
+        alert(err.message);
+    }
+};
+
+animal.addEventListener("change", async (e) => {
+    const imgData = await imgs();
+    const imagenes = imgData.find((item) => item.name === e.target.value);
+    preview.style.backgroundImage = `url("${imagenes.imagen}")`;
+});
+
+const play = (sonido) => {
+    player.src = sonido;
+    player.play();
+};
+
+const crearTarjeta = (animal) => {
+    return `<div class="mostrarAnimal" onclick="play('${animal.getSonido}')">
+    <img src="${animal.getImg}" alt="${animal.getNombre}">
+    <button>click</button>
+  </div>`;
+};
+
+const agrupar = async () => {
+    const datasAnimales = await imgs();
     const animalSelect = animal.value;
+
+    const datos = datasAnimales.find((item) => item.name === animalSelect);
+
     const edadSelect = edad.value;
     const msg = comentarios.value;
-    console.log(animalSelect);
-    console.log(edadSelect);
-    console.log(msg);
 
     if (animalSelect === "Seleccione un animal") {
         alert("Tiene que seleccionar un animal");
@@ -91,29 +128,29 @@ const agrupar = () => {
         return;
     }
 
-    const img = document.createElement("img");
-    preview.appendChild(img);
+    let animalInstancia;
 
     switch (animalSelect) {
         case "Leon":
-            img.src = "../assets/imgs/Leon.png";
-            img.width = "200";
+            animalInstancia = new Leon(animalSelect, edadSelect, datos.imagen, msg, datos.sonido);
             break;
         case "Lobo":
-            img.src = "../assets/imgs/Lobo.jpg";
-            img.width = "200";
+            animalInstancia = new Lobo(animalSelect, edadSelect, datos.imagen, msg, datos.sonido);
             break;
         case "Oso":
-            img.src = "../assets/imgs/Oso.jpg";
-            img.width = "200";
+            animalInstancia = new Oso(animalSelect, edadSelect, datos.imagen, msg, datos.sonido);
             break;
         case "Serpiente":
-            img.src = "../assets/imgs/Serpiente.jpg";
-            img.width = "200";
+            animalInstancia = new Serpiente(animalSelect, edadSelect, datos.imagen, msg, datos.sonido);
             break;
         case "Aguila":
-            img.src = "../assets/imgs/Aguila.png";
-            img.width = "200";
+            animalInstancia = new Aguila(animalSelect, edadSelect, datos.imagen, msg, datos.sonido);
+            break;
+        default:
             break;
     }
+    console.log(animalInstancia);
+    const instancia = crearTarjeta(animalInstancia);
+
+    Animales.innerHTML += instancia;
 };
