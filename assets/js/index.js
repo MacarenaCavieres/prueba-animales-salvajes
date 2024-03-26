@@ -94,15 +94,11 @@ animal.addEventListener("change", async (e) => {
     preview.style.backgroundImage = `url("${imagenes.imagen}")`;
 });
 
-const play = (sonido) => {
-    player.src = sonido;
-    player.play();
-};
-
 const crearTarjeta = (animal) => {
-    return `<div class="mostrarAnimal" onclick="play('${animal.getSonido}')">
+    return `<div class="mostrarAnimal">
     <img src="${animal.getImg}" alt="${animal.getNombre}">
     <button>click</button>
+    <audio src="${animal.getSonido}"></audio>
   </div>`;
 };
 
@@ -153,4 +149,14 @@ const agrupar = async () => {
     const instancia = crearTarjeta(animalInstancia);
 
     Animales.innerHTML += instancia;
+
+    let animalitos = document.querySelectorAll(".mostrarAnimal");
+
+    animalitos.forEach((item) => {
+        item.addEventListener("click", function () {
+            let audio = this.querySelector("audio");
+            console.log(audio);
+            audio.play();
+        });
+    });
 };
