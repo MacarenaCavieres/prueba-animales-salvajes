@@ -27,6 +27,7 @@ body {
 #Animales {
     height: 100%;
     background: #f0f0f0;
+    text-align: left;
 }
 
 #Animales div div {
@@ -48,5 +49,11 @@ body {
 }
 
 .mostrarAnimal img {
-    width: 200px;
+    width: 50%;
+    height: 50%;
+    margin-top: 1rem;
+}
+
+button {
+    margin-top: 0.5rem;
 }
